@@ -71,7 +71,10 @@ public class BookHelper {
         if (!authorName.isEmpty()) {
             Author author = new AuthorHelper().getAuthor(authorName);
             if (author == null) {
-                return false;
+                if (!(new AuthorHelper().createAuthor(authorName))) {
+                    return false;
+                }
+                author  = new AuthorHelper().getAuthor(authorName);
             }
             book.setAuthor(author);
         }
@@ -91,6 +94,7 @@ public class BookHelper {
                     || session.getTransaction().getStatus() == TransactionStatus.MARKED_ROLLBACK) {
                 session.getTransaction().rollback();
             }
+            ex.printStackTrace();
             return false;
         } finally {
             session.close();
